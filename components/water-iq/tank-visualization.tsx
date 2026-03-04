@@ -4,12 +4,12 @@ import { useRef, useEffect, useState } from "react"
 import { motion, useInView } from "framer-motion"
 
 const tankComponents = [
-  { label: "Swirl Chamber", x: 50, y: 15, color: "#00D4FF" },
-  { label: "Oil Separator", x: 50, y: 30, color: "#00FFB2" },
-  { label: "Sensor Module", x: 50, y: 45, color: "#00D4FF" },
-  { label: "Membrane Filter", x: 50, y: 60, color: "#00FFB2" },
-  { label: "Outlet Valve", x: 30, y: 78, color: "#00D4FF" },
-  { label: "Reuse Pump", x: 70, y: 78, color: "#00FFB2" },
+  { label: "Swirl Chamber", x: 50, y: 13, color: "#00D4FF", desc: "Flow stabilizer" },
+  { label: "Oil Separator", x: 50, y: 27, color: "#00FFB2", desc: "Surface plate" },
+  { label: "Sensor Array", x: 50, y: 42, color: "#00D4FF", desc: "5 parameters" },
+  { label: "Membrane Filter", x: 50, y: 57, color: "#00FFB2", desc: "0.1μm rating" },
+  { label: "Drain Valve", x: 28, y: 76, color: "#00D4FF", desc: "Discard" },
+  { label: "Reuse Pump", x: 72, y: 76, color: "#00FFB2", desc: "Storage" },
 ]
 
 export default function TankVisualization({ exploded = false }: { exploded?: boolean }) {
@@ -20,192 +20,170 @@ export default function TankVisualization({ exploded = false }: { exploded?: boo
 
   useEffect(() => {
     if (!isInView) return
-    const timer1 = setTimeout(() => setPhase(1), 500) // appear
-    const timer2 = setTimeout(() => setPhase(2), 2000) // explode
-    const timer3 = setTimeout(() => setPhase(3), 5000) // reassemble
-    const timer4 = setTimeout(() => {
-      setPhase(4) // water flow
-      setWaterLevel(75)
-    }, 6500)
-    return () => {
-      clearTimeout(timer1)
-      clearTimeout(timer2)
-      clearTimeout(timer3)
-      clearTimeout(timer4)
-    }
+    const t1 = setTimeout(() => setPhase(1), 400)
+    const t2 = setTimeout(() => setPhase(2), 1800)
+    const t3 = setTimeout(() => setPhase(3), 4500)
+    const t4 = setTimeout(() => { setPhase(4); setWaterLevel(70) }, 6000)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4) }
   }, [isInView])
 
   const currentPhase = exploded ? 2 : phase
 
   return (
-    <div ref={ref} className="relative mx-auto h-[500px] w-full max-w-[400px] md:h-[600px] md:max-w-[450px]">
-      {/* Tank body */}
+    <div ref={ref} className="relative mx-auto h-[500px] w-full max-w-[400px] md:h-[600px] md:max-w-[460px]">
+      {/* Ambient glow */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={
-          isInView
-            ? { opacity: 1, scale: 1, rotateY: currentPhase >= 1 ? [0, 5, -5, 0] : 0 }
-            : {}
-        }
-        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute inset-0 -z-10 rounded-[40px] blur-[60px]"
+        animate={{ opacity: phase >= 1 ? [0.06, 0.12, 0.06] : 0 }}
+        transition={{ duration: 4, repeat: Infinity }}
+        style={{ background: "radial-gradient(ellipse, rgba(0,212,255,0.3) 0%, rgba(0,255,178,0.1) 60%, transparent 100%)" }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={isInView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         className="relative mx-auto h-full w-[280px] md:w-[320px]"
       >
-        {/* Tank outer shell */}
-        <div className="absolute inset-0 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-b from-secondary/80 to-background/80">
-          {/* Water fill animation */}
+        {/* Tank shell */}
+        <div className="absolute inset-0 overflow-hidden rounded-[28px] border border-primary/20 bg-gradient-to-b from-secondary/80 via-secondary/60 to-background/85">
+          {/* Water fill */}
           <motion.div
             className="absolute bottom-0 left-0 right-0"
             initial={{ height: "0%" }}
             animate={{ height: `${waterLevel}%` }}
-            transition={{ duration: 2, ease: "easeInOut" }}
+            transition={{ duration: 2.5, ease: "easeInOut" }}
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-primary/5" />
-            {/* Water surface wave */}
-            <svg
-              className="absolute -top-2 left-0 w-full"
-              viewBox="0 0 320 20"
-              fill="none"
-            >
+            <div className="absolute inset-0 bg-gradient-to-t from-primary/22 via-primary/8 to-transparent" />
+            <svg className="absolute -top-3 left-0 w-full" viewBox="0 0 320 24" fill="none" preserveAspectRatio="none">
               <motion.path
-                d="M0 10 Q40 0 80 10 T160 10 T240 10 T320 10 V20 H0 Z"
-                fill="rgba(0, 212, 255, 0.15)"
+                fill="rgba(0,212,255,0.13)"
                 animate={{
                   d: [
-                    "M0 10 Q40 0 80 10 T160 10 T240 10 T320 10 V20 H0 Z",
-                    "M0 10 Q40 20 80 10 T160 10 T240 10 T320 10 V20 H0 Z",
-                    "M0 10 Q40 0 80 10 T160 10 T240 10 T320 10 V20 H0 Z",
+                    "M0 12 Q40 4 80 12 T160 12 T240 12 T320 12 V24 H0 Z",
+                    "M0 12 Q40 20 80 12 T160 12 T240 12 T320 12 V24 H0 Z",
+                    "M0 12 Q40 4 80 12 T160 12 T240 12 T320 12 V24 H0 Z",
                   ],
                 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               />
             </svg>
-            {/* Bubbles */}
-            {[...Array(6)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute rounded-full bg-primary/20"
+                className="absolute rounded-full bg-primary/25"
                 style={{
-                  width: 4 + Math.random() * 6,
-                  height: 4 + Math.random() * 6,
-                  left: `${15 + Math.random() * 70}%`,
-                  bottom: `${Math.random() * 80}%`,
+                  width: 3 + (i % 3) * 2,
+                  height: 3 + (i % 3) * 2,
+                  left: `${10 + (i * 11) % 80}%`,
+                  bottom: `${5 + (i * 13) % 70}%`,
                 }}
-                animate={{
-                  y: [-20, -60 - Math.random() * 40],
-                  opacity: [0.6, 0],
-                  scale: [1, 0.5],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 3,
-                  ease: "easeOut",
-                }}
+                animate={{ y: [-5, -40 - (i % 3) * 20], opacity: [0.5, 0], scale: [1, 0.3] }}
+                transition={{ duration: 2.5 + (i % 3) * 0.8, repeat: Infinity, delay: (i * 0.4) % 3, ease: "easeOut" }}
               />
             ))}
           </motion.div>
 
-          {/* Internal components */}
+          {/* Horizontal separator lines */}
+          {[22, 38, 52, 67].map((y, i) => (
+            <motion.div
+              key={i}
+              className="absolute left-4 right-4 h-px"
+              style={{ top: `${y}%` }}
+              animate={{ opacity: currentPhase >= 1 ? 0.12 : 0 }}
+              transition={{ delay: 0.5 + i * 0.1 }}
+              style={{ top: `${y}%`, background: "linear-gradient(90deg, transparent, rgba(0,212,255,0.3), transparent)" }}
+            />
+          ))}
+
+          {/* Components */}
           {tankComponents.map((comp, i) => {
-            const explodedOffset = currentPhase === 2 ? (i % 2 === 0 ? -40 : 40) : 0
-            const explodedYOffset = currentPhase === 2 ? (i - 2.5) * 8 : 0
+            const isLeft = comp.x < 50
+            const isRight = comp.x > 50
+            const explodeX = currentPhase === 2 ? (isLeft ? -55 : isRight ? 55 : (i % 2 === 0 ? -30 : 30)) : 0
+            const explodeY = currentPhase === 2 ? (i - 2.5) * 12 : 0
             return (
               <motion.div
                 key={comp.label}
-                className="absolute flex items-center justify-center"
-                style={{
-                  left: `${comp.x}%`,
-                  top: `${comp.y}%`,
-                  transform: "translate(-50%, -50%)",
-                }}
-                animate={{
-                  x: explodedOffset,
-                  y: explodedYOffset,
-                  opacity: currentPhase >= 1 ? 1 : 0,
-                }}
-                transition={{
-                  duration: 0.8,
-                  delay: currentPhase === 2 ? i * 0.1 : i * 0.05,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
+                className="absolute"
+                style={{ left: `${comp.x}%`, top: `${comp.y}%`, transform: "translate(-50%, -50%)" }}
+                animate={{ x: explodeX, y: explodeY, opacity: currentPhase >= 1 ? 1 : 0 }}
+                transition={{ duration: 0.9, delay: currentPhase === 2 ? i * 0.09 : i * 0.06, ease: [0.22, 1, 0.36, 1] }}
               >
-                {/* Component visual */}
-                <div className="relative">
-                  <motion.div
-                    className="rounded-lg border px-3 py-1.5"
-                    style={{
-                      borderColor: `${comp.color}40`,
-                      background: `linear-gradient(135deg, ${comp.color}10, ${comp.color}05)`,
-                    }}
-                    animate={
-                      currentPhase === 2
-                        ? {
-                            boxShadow: [
-                              `0 0 10px ${comp.color}20`,
-                              `0 0 20px ${comp.color}40`,
-                              `0 0 10px ${comp.color}20`,
-                            ],
-                          }
-                        : {}
-                    }
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <span
-                      className="whitespace-nowrap text-xs font-medium"
-                      style={{ color: comp.color }}
-                    >
-                      {comp.label}
-                    </span>
-                  </motion.div>
-                  {/* Connector line */}
+                <motion.div
+                  className="relative rounded-lg border px-2.5 py-1.5"
+                  style={{ borderColor: `${comp.color}40`, background: `linear-gradient(135deg, ${comp.color}12, ${comp.color}06)` }}
+                  animate={currentPhase === 2 ? { boxShadow: [`0 0 8px ${comp.color}25`, `0 0 20px ${comp.color}45`, `0 0 8px ${comp.color}25`] } : {}}
+                  transition={{ duration: 1.8, repeat: Infinity }}
+                >
+                  <div className="whitespace-nowrap text-xs font-bold" style={{ color: comp.color }}>{comp.label}</div>
                   {currentPhase === 2 && (
-                    <motion.div
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 0.5, width: 20 }}
-                      className="absolute top-1/2 h-px"
-                      style={{
-                        background: comp.color,
-                        [explodedOffset > 0 ? "right" : "left"]: "100%",
-                      }}
-                    />
+                    <div className="whitespace-nowrap text-[10px]" style={{ color: `${comp.color}80` }}>{comp.desc}</div>
                   )}
-                </div>
+                </motion.div>
+                {currentPhase === 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, scaleX: 0 }}
+                    animate={{ opacity: 0.45, scaleX: 1 }}
+                    className="absolute top-1/2 h-px w-5"
+                    style={{
+                      background: `linear-gradient(${isRight ? "to right" : "to left"}, transparent, ${comp.color})`,
+                      [isRight ? "right" : "left"]: "100%",
+                      transformOrigin: isRight ? "left" : "right",
+                    }}
+                  />
+                )}
               </motion.div>
             )
           })}
 
-          {/* Flow arrows when assembled */}
-          {currentPhase === 4 && (
-            <>
-              {[20, 35, 50, 65].map((top, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute left-1/2 -translate-x-1/2"
-                  style={{ top: `${top}%` }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.6, 0], y: [0, 20] }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: i * 0.3,
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M8 2L8 14M8 14L3 9M8 14L13 9"
-                      stroke="#00D4FF"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </motion.div>
-              ))}
-            </>
-          )}
+          {/* Flow arrows when active */}
+          {currentPhase === 4 && [18, 33, 48, 62].map((top, i) => (
+            <motion.div
+              key={i}
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{ top: `${top}%` }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.55, 0], y: [0, 18] }}
+              transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.35 }}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 2L7 12M7 12L3 8M7 12L11 8" stroke="#00D4FF" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Glow effect behind tank */}
-        <div className="absolute inset-0 -z-10 rounded-2xl bg-primary/5 blur-3xl" />
+        {/* Input pipe top */}
+        <motion.div
+          animate={{ opacity: phase >= 1 ? 1 : 0 }}
+          className="absolute -top-5 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1"
+        >
+          <div className="h-6 w-6 rounded-full border border-primary/30 bg-secondary/60 flex items-center justify-center">
+            <div className="h-2 w-2 rounded-full bg-primary/60" />
+          </div>
+          <div className="h-4 w-0.5 bg-gradient-to-b from-primary/40 to-transparent" />
+        </motion.div>
+
+        {/* Output pipes bottom */}
+        {phase >= 1 && (
+          <div className="absolute -bottom-5 left-0 right-0 flex justify-around px-8">
+            {["Reuse", "Drain"].map((label, i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + i * 0.2 }}
+                className="flex flex-col items-center gap-1"
+              >
+                <div className="h-4 w-0.5 bg-gradient-to-b from-transparent to-primary/40" />
+                <div className="rounded-full border border-primary/25 bg-secondary/60 px-2.5 py-0.5 text-[9px] font-bold text-primary/70">
+                  {label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.div>
     </div>
   )
