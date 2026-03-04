@@ -1,6 +1,5 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import SmoothScroll from "@/components/water-iq/smooth-scroll"
 import Navbar from "@/components/water-iq/navbar"
 import HeroSection from "@/components/water-iq/hero-section"
@@ -12,30 +11,30 @@ import ProductApplications from "@/components/water-iq/product-applications"
 import VisionSection from "@/components/water-iq/vision-section"
 import SectionDivider from "@/components/water-iq/section-divider"
 
-const WaterParticles = dynamic(
-  () => import("@/components/water-iq/water-particles"),
-  { ssr: false }
-)
-
 export default function Home() {
   return (
     <SmoothScroll>
-      <WaterParticles />
+      {/* WaterParticles intentionally removed: Three.js hero scene includes ambient particles */}
       <Navbar />
-      <main className="relative z-10">
+      <main>
+        {/* Hero — full height Three.js cinematic section */}
         <HeroSection />
-        <SectionDivider />
-        <ProblemSection />
-        <SectionDivider />
-        <SolutionSection />
-        <SectionDivider />
-        <SystemBreakdown />
-        <SectionDivider />
-        <DashboardPreview />
-        <SectionDivider />
-        <ProductApplications />
-        <SectionDivider />
-        <VisionSection />
+
+        {/* Remaining sections — z-index above Three.js canvas ends here */}
+        <div className="relative z-10 bg-background">
+          <SectionDivider />
+          <ProblemSection />
+          <SectionDivider />
+          <SolutionSection />
+          <SectionDivider />
+          <SystemBreakdown />
+          <SectionDivider />
+          <DashboardPreview />
+          <SectionDivider />
+          <ProductApplications />
+          <SectionDivider />
+          <VisionSection />
+        </div>
       </main>
     </SmoothScroll>
   )
