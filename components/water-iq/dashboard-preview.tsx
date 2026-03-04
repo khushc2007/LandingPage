@@ -1,40 +1,9 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef, useEffect, useState } from "react"
+import { useRef } from "react"
 import { Activity, Droplets, Thermometer, Gauge, TrendingUp, Bell } from "lucide-react"
-
-// Simulated live data
-function useSimulatedData() {
-  const [data, setData] = useState({
-    ph: 7.2,
-    turbidity: 12,
-    tds: 145,
-    orp: 320,
-    ammonia: 0.3,
-    flow: 11.4,
-    temp: 28.5,
-    saved: 2847,
-  })
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setData((prev) => ({
-        ph: +(prev.ph + (Math.random() - 0.5) * 0.1).toFixed(1),
-        turbidity: Math.max(1, +(prev.turbidity + (Math.random() - 0.5) * 2).toFixed(0)),
-        tds: Math.max(50, +(prev.tds + (Math.random() - 0.5) * 5).toFixed(0)),
-        orp: Math.max(200, +(prev.orp + (Math.random() - 0.5) * 10).toFixed(0)),
-        ammonia: Math.max(0.1, +(prev.ammonia + (Math.random() - 0.5) * 0.05).toFixed(2)),
-        flow: Math.max(5, +(prev.flow + (Math.random() - 0.5) * 0.5).toFixed(1)),
-        temp: +(prev.temp + (Math.random() - 0.5) * 0.3).toFixed(1),
-        saved: prev.saved + Math.floor(Math.random() * 3),
-      }))
-    }, 2000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return data
-}
+import { useSimulatedDashboardData } from "@/hooks/useSimulatedDashboardData"
 
 function MiniChart({ color, height = 40 }: { color: string; height?: number }) {
   const points = useRef(Array.from({ length: 20 }, () => Math.random() * 0.6 + 0.2))
@@ -71,13 +40,14 @@ function MiniChart({ color, height = 40 }: { color: string; height?: number }) {
 export default function DashboardPreview() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
-  const data = useSimulatedData()
+  const data = useSimulatedDashboardData()
 
   const sensors = [
-    { label: "pH Level", value: data.ph, unit: "", icon: Activity, color: "#00D4FF" },
+    { label: "pH", value: data.ph, unit: "", icon: Activity, color: "#00D4FF" },
     { label: "Turbidity", value: data.turbidity, unit: "NTU", icon: Droplets, color: "#00FFB2" },
     { label: "TDS", value: data.tds, unit: "ppm", icon: Gauge, color: "#00D4FF" },
-    { label: "Temperature", value: data.temp, unit: "°C", icon: Thermometer, color: "#00FFB2" },
+    { label: "ORP", value: data.orp, unit: "mV", icon: Thermometer, color: "#00FFB2" },
+    { label: "Ammonia", value: data.ammonia, unit: "mg/L", icon: Thermometer, color: "#00D4FF" },
   ]
 
   return (
@@ -90,14 +60,14 @@ export default function DashboardPreview() {
           className="text-center"
         >
           <span className="text-xs font-medium tracking-widest text-primary uppercase">
-            Platform
+            Smart Monitoring
           </span>
           <h2 className="mt-4 font-[var(--font-heading)] text-4xl font-bold text-foreground md:text-5xl text-balance">
-            Monitoring Dashboard
+            Industrial-Grade SCADA-Inspired Dashboard
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Complete visibility into your water treatment system with real-time
-            analytics and predictive insights.
+            Live visualization of pH, TDS, turbidity, ORP, and ammonia levels,
+            wrapped in a modern interface inspired by industrial control rooms.
           </p>
         </motion.div>
 

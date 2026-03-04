@@ -211,6 +211,43 @@ export default function FiltrationIntelligence() {
                     </div>
                   </div>
                 </div>
+
+                {/* Animated routing flow */}
+                <div className="mt-10">
+                  <div className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    Routing Diagram
+                  </div>
+                  <div className="mt-4 flex flex-col gap-3 text-xs text-muted-foreground md:flex-row md:items-center md:gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-primary" />
+                      <span>Inlet Greywater</span>
+                    </div>
+                    <div className="hidden h-px flex-1 bg-gradient-to-r from-primary/40 via-accent/40 to-primary/40 md:block" />
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-accent" />
+                      <span>Classification Engine</span>
+                    </div>
+                    <div className="hidden h-px flex-1 bg-gradient-to-r from-accent/40 via-primary/40 to-accent/40 md:block" />
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
+                        Reuse Storage
+                      </span>
+                      <span className="flex items-center gap-1 rounded-full border border-accent/30 bg-accent/5 px-2.5 py-1 text-[10px] font-semibold uppercase text-accent">
+                        Treatment Loop
+                      </span>
+                      <span className="flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-destructive">
+                        Safe Discharge
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                    <motion.div
+                      className="h-full w-1/3 rounded-full bg-gradient-to-r from-primary via-accent to-destructive"
+                      animate={{ x: ["-10%", "120%"] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </div>
+                </div>
               </motion.div>
             </div>
           </motion.div>

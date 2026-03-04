@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Droplets, ArrowRight } from "lucide-react"
+import TankVisualization from "./tank-visualization"
 
 export default function VisionSection() {
   const ref = useRef<HTMLDivElement>(null)
@@ -21,24 +22,27 @@ export default function VisionSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10"
-          >
-            <Droplets className="h-8 w-8 text-primary" />
-          </motion.div>
+          <div className="mx-auto mb-10 flex flex-col items-center gap-6 md:flex-row md:gap-10">
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10"
+            >
+              <Droplets className="h-8 w-8 text-primary" />
+            </motion.div>
+            <div className="w-full max-w-xs">
+              <TankVisualization />
+            </div>
+          </div>
 
           <h2 className="font-[var(--font-heading)] text-4xl font-bold text-foreground md:text-5xl lg:text-6xl text-balance">
-            Reimagining{" "}
-            <span className="glow-text text-primary">Water Use</span>{" "}
-            in Modern Cities
+            Every <span className="glow-text text-primary">Drop</span> Matters
           </h2>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Intelligent greywater reuse will transform apartment infrastructure,
-            making every building a node in a smarter, more sustainable urban water
-            network. WATER-IQ is the foundation for that future.
+            WATER-IQ turns greywater into a resource. By monitoring, classifying,
+            and routing every liter, it enables buildings and cities to reuse water
+            without adding complexity for residents.
           </p>
 
           <motion.div
@@ -48,17 +52,17 @@ export default function VisionSection() {
             className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
           >
             <a
-              href="#solution"
+              href="#contact"
               className="glow-cyan flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-semibold text-primary-foreground transition-all hover:shadow-[0_0_30px_rgba(0,212,255,0.4)]"
             >
-              Get Started
+              Request Demo
               <ArrowRight className="h-4 w-4" />
             </a>
             <a
-              href="#technology"
+              href="#dashboard"
               className="rounded-xl border border-border bg-secondary/50 px-8 py-4 text-sm font-semibold text-foreground transition-all hover:border-primary/30"
             >
-              Explore Technology
+              Explore Dashboard
             </a>
           </motion.div>
         </motion.div>

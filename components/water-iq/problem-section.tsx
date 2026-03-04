@@ -48,13 +48,25 @@ export default function ProblemSection() {
           className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3"
         >
           <div className="glass glow-cyan rounded-2xl p-8">
-            <AnimatedCounter end={70} suffix="%" label="Of greywater is reusable" />
+            <AnimatedCounter
+              end={70}
+              suffix="%"
+              label="Of household water becomes greywater"
+            />
           </div>
           <div className="glass glow-cyan rounded-2xl p-8">
-            <AnimatedCounter end={350} suffix="L" label="Average daily apartment usage" />
+            <AnimatedCounter
+              end={120}
+              suffix="k+"
+              label="Liters of greywater wasted daily per complex"
+            />
           </div>
           <div className="glass glow-cyan rounded-2xl p-8">
-            <AnimatedCounter end={2} suffix="B+" label="People in water-stressed areas" />
+            <AnimatedCounter
+              end={30}
+              suffix="+"
+              label="Global cities already facing severe water stress"
+            />
           </div>
         </motion.div>
 
