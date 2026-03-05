@@ -5,18 +5,18 @@ import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion"
 import { Droplets, Menu, X } from "lucide-react"
 
 const navLinks = [
-  { label: "Problem", href: "#problem" },
-  { label: "Solution", href: "#solution" },
-  { label: "System", href: "#system" },
-  { label: "Dashboard", href: "#dashboard" },
-  { label: "Applications", href: "#applications" },
-  { label: "Vision", href: "#vision" },
+  { label: "Problem",     href: "#problem"     },
+  { label: "Solution",    href: "#solution"    },
+  { label: "3D Model",    href: "#tank"         },
+  { label: "System",      href: "#system"      },
+  { label: "Dashboard",   href: "#dashboard"   },
+  { label: "Applications",href: "#applications"},
 ]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState("")
+  const [scrolled,       setScrolled]       = useState(false)
+  const [mobileOpen,     setMobileOpen]     = useState(false)
+  const [activeSection,  setActiveSection]  = useState("")
 
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
@@ -24,13 +24,10 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
-      const sections = navLinks.map(l => l.href.replace("#", ""))
-      for (const s of sections.slice().reverse()) {
+      const ids = navLinks.map(l => l.href.replace("#", ""))
+      for (const s of ids.slice().reverse()) {
         const el = document.getElementById(s)
-        if (el && window.scrollY >= el.offsetTop - 120) {
-          setActiveSection(s)
-          break
-        }
+        if (el && window.scrollY >= el.offsetTop - 130) { setActiveSection(s); break }
       }
     }
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -39,9 +36,10 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Scroll progress line */}
       <motion.div
-        className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-primary via-accent to-primary"
-        style={{ scaleX }}
+        className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left"
+        style={{ scaleX, background: "linear-gradient(90deg, #00D4FF, #00FFB2, #00D4FF)" }}
       />
 
       <motion.header
@@ -49,28 +47,34 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "glass-strong py-3 shadow-[0_1px_0_rgba(0,212,255,0.1)]" : "py-6"
+          scrolled
+            ? "glass-strong py-3 shadow-[0_1px_0_rgba(0,212,255,0.12)]"
+            : "py-6"
         }`}
       >
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6">
+
+          {/* Logo */}
           <a href="#" className="group flex items-center gap-2.5">
             <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}>
               <Droplets className="h-7 w-7 text-primary drop-shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
             </motion.div>
-            <span className="font-[var(--font-heading)] text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-              WATER-IQ
+            <span className="text-xl font-black tracking-tight text-foreground group-hover:text-primary transition-colors"
+              style={{ fontFamily: "'Orbitron', monospace" }}>
+              WATER·IQ
             </span>
           </a>
 
-          <div className="hidden items-center gap-1 md:flex">
+          {/* Desktop links */}
+          <div className="hidden items-center gap-0.5 md:flex">
             {navLinks.map((link) => {
-              const id = link.href.replace("#", "")
+              const id       = link.href.replace("#", "")
               const isActive = activeSection === id
               return (
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-lg ${
+                  className={`relative px-3.5 py-2 text-sm font-medium transition-colors rounded-lg ${
                     isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -87,17 +91,19 @@ export default function Navbar() {
             })}
           </div>
 
+          {/* CTA */}
           <div className="hidden md:block">
             <motion.a
-              href="#solution"
+              href="#tank"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="relative overflow-hidden rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_20px_rgba(0,212,255,0.25)] transition-all hover:shadow-[0_0_30px_rgba(0,212,255,0.45)]"
+              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_20px_rgba(0,212,255,0.25)] transition-all hover:shadow-[0_0_30px_rgba(0,212,255,0.45)]"
             >
-              Get Started
+              View 3D Model
             </motion.a>
           </div>
 
+          {/* Mobile burger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="text-foreground md:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
@@ -117,6 +123,7 @@ export default function Navbar() {
           </button>
         </nav>
 
+        {/* Mobile menu */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -141,13 +148,13 @@ export default function Navbar() {
                   </motion.a>
                 ))}
                 <motion.a
-                  href="#solution"
+                  href="#tank"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35 }}
+                  transition={{ delay: 0.38 }}
                   className="mt-3 rounded-xl bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground"
                 >
-                  Get Started
+                  View 3D Model
                 </motion.a>
               </div>
             </motion.div>
