@@ -2,23 +2,27 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
-import { Activity, Droplets, Thermometer, Gauge, TrendingUp, Bell, Wifi, CheckCircle2 } from "lucide-react"
+import { Activity, Droplets, Thermometer, Gauge, TrendingUp, Bell, Wifi, CheckCircle2, Cpu } from "lucide-react"
 import AnimatedCounter from "./animated-counter"
+import ScrollReveal from "./animations/scroll-reveal"
+import StaggerReveal from "./animations/stagger-reveal"
+import SensorPanel from "./ui/sensor-panel"
+import MetricCard from "./ui/metric-card"
 
 function useSimulatedData() {
   const [data, setData] = useState({ ph: 7.2, turbidity: 12, tds: 145, orp: 320, ammonia: 0.3, flow: 11.4, temp: 28.5, saved: 2847, reuse: 73 })
   useEffect(() => {
     const interval = setInterval(() => {
       setData(prev => ({
-        ph: +(prev.ph + (Math.random() - 0.5) * 0.1).toFixed(1),
-        turbidity: Math.max(1, +(prev.turbidity + (Math.random() - 0.5) * 2).toFixed(0)),
-        tds: Math.max(50, +(prev.tds + (Math.random() - 0.5) * 5).toFixed(0)),
-        orp: Math.max(200, +(prev.orp + (Math.random() - 0.5) * 10).toFixed(0)),
-        ammonia: Math.max(0.1, +(prev.ammonia + (Math.random() - 0.5) * 0.05).toFixed(2)),
-        flow: Math.max(5, +(prev.flow + (Math.random() - 0.5) * 0.5).toFixed(1)),
-        temp: +(prev.temp + (Math.random() - 0.5) * 0.3).toFixed(1),
-        saved: prev.saved + Math.floor(Math.random() * 3),
-        reuse: Math.min(82, Math.max(65, prev.reuse + (Math.random() - 0.5) * 2)),
+        ph:         +(prev.ph + (Math.random() - 0.5) * 0.1).toFixed(1),
+        turbidity:  Math.max(1, +(prev.turbidity + (Math.random() - 0.5) * 2).toFixed(0)),
+        tds:        Math.max(50, +(prev.tds + (Math.random() - 0.5) * 5).toFixed(0)),
+        orp:        Math.max(200, +(prev.orp + (Math.random() - 0.5) * 10).toFixed(0)),
+        ammonia:    Math.max(0.1, +(prev.ammonia + (Math.random() - 0.5) * 0.05).toFixed(2)),
+        flow:       Math.max(5, +(prev.flow + (Math.random() - 0.5) * 0.5).toFixed(1)),
+        temp:       +(prev.temp + (Math.random() - 0.5) * 0.3).toFixed(1),
+        saved:      prev.saved + Math.floor(Math.random() * 3),
+        reuse:      Math.min(82, Math.max(65, prev.reuse + (Math.random() - 0.5) * 2)),
       }))
     }, 2200)
     return () => clearInterval(interval)
@@ -58,26 +62,20 @@ export default function DashboardPreview() {
   const data = useSimulatedData()
 
   const sensors = [
-    { label: "pH Level", value: data.ph, unit: "", icon: Activity, color: "#00D4FF" },
-    { label: "Turbidity", value: data.turbidity, unit: "NTU", icon: Droplets, color: "#00FFB2" },
-    { label: "TDS", value: data.tds, unit: "ppm", icon: Gauge, color: "#00D4FF" },
-    { label: "Temperature", value: data.temp, unit: "°C", icon: Thermometer, color: "#00FFB2" },
+    { label: "pH Level",     value: data.ph,         unit: "",    icon: Activity,    color: "#00D4FF", trend: "stable" as const },
+    { label: "Turbidity",    value: data.turbidity,  unit: "NTU", icon: Droplets,    color: "#00FFB2", trend: "down" as const },
+    { label: "TDS",          value: data.tds,        unit: "ppm", icon: Gauge,       color: "#00D4FF", trend: "stable" as const },
+    { label: "Temperature",  value: data.temp,       unit: "°C",  icon: Thermometer, color: "#00FFB2", trend: "up" as const },
   ]
 
   return (
     <section id="dashboard" className="relative py-36 px-6">
-      {/* Background */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/3 blur-[150px]" />
       </div>
 
       <div ref={ref} className="relative z-10 mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center"
-        >
+        <ScrollReveal className="text-center">
           <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase">Intelligence Platform</span>
           <h2 className="mt-4 font-[var(--font-heading)] text-4xl font-black text-foreground md:text-5xl lg:text-6xl text-balance">
             Live Water Intelligence
@@ -85,7 +83,7 @@ export default function DashboardPreview() {
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
             Complete real-time visibility into every sensor, every decision, every drop.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Dashboard mockup */}
         <motion.div
@@ -126,40 +124,21 @@ export default function DashboardPreview() {
             </div>
 
             <div className="p-5 md:p-7">
-              {/* Sensor cards */}
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                {sensors.map((sensor, i) => (
-                  <motion.div
+              {/* Sensor cards — SensorPanel primitives */}
+              <StaggerReveal className="grid grid-cols-2 gap-3 lg:grid-cols-4" baseDelay={0.3}>
+                {sensors.map((sensor) => (
+                  <SensorPanel
                     key={sensor.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.4 + i * 0.1 }}
-                    className="rounded-xl border border-border/40 bg-secondary/25 p-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <sensor.icon className="h-3.5 w-3.5" style={{ color: sensor.color }} />
-                        <span className="text-xs text-muted-foreground">{sensor.label}</span>
-                      </div>
-                      <CheckCircle2 className="h-3 w-3 text-accent/60" />
-                    </div>
-                    <div className="mt-2 flex items-baseline gap-1">
-                      <motion.span
-                        key={sensor.value}
-                        initial={{ opacity: 0.6, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="text-2xl font-black text-foreground"
-                      >
-                        {sensor.value}
-                      </motion.span>
-                      <span className="text-xs text-muted-foreground">{sensor.unit}</span>
-                    </div>
-                    <div className="mt-2 h-8">
-                      <SparkLine color={sensor.color} height={32} />
-                    </div>
-                  </motion.div>
+                    label={sensor.label}
+                    value={sensor.value}
+                    unit={sensor.unit}
+                    icon={sensor.icon}
+                    color={sensor.color}
+                    trend={sensor.trend}
+                    active
+                  />
                 ))}
-              </div>
+              </StaggerReveal>
 
               {/* Main chart + status */}
               <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -183,10 +162,10 @@ export default function DashboardPreview() {
                   <span className="text-sm font-bold text-foreground">System Health</span>
                   <div className="mt-5 flex flex-col gap-3">
                     {[
-                      { label: "Reuse Rate", value: `${Math.round(data.reuse)}%`, color: "#00FFB2" },
-                      { label: "System Health", value: "98%", color: "#00D4FF" },
-                      { label: "ORP Level", value: `${data.orp} mV`, color: "#00D4FF" },
-                      { label: "NH₃ Level", value: `${data.ammonia} mg/L`, color: "#00FFB2" },
+                      { label: "Reuse Rate",    value: `${Math.round(data.reuse)}%`, color: "#00FFB2" },
+                      { label: "System Health", value: "98%",                        color: "#00D4FF" },
+                      { label: "ORP Level",     value: `${data.orp} mV`,             color: "#00D4FF" },
+                      { label: "NH₃ Level",     value: `${data.ammonia} mg/L`,       color: "#00FFB2" },
                     ].map((item) => (
                       <div key={item.label} className="flex items-center justify-between">
                         <span className="text-xs text-muted-foreground">{item.label}</span>
@@ -219,7 +198,7 @@ export default function DashboardPreview() {
                 transition={{ delay: 0.8 }}
                 className="mt-4 flex items-start gap-3 rounded-xl border border-primary/18 bg-primary/5 p-4"
               >
-                <Activity className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <Cpu className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <div>
                   <span className="text-sm font-semibold text-foreground">AI Predictive Insight</span>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
@@ -232,25 +211,13 @@ export default function DashboardPreview() {
           </div>
         </motion.div>
 
-        {/* Key metric callouts */}
-        <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[
-            { end: 99, suffix: ".7%", label: "Routing Accuracy" },
-            { end: 73, suffix: "%", label: "Average Reuse Rate" },
-            { end: 500, suffix: "ms", label: "Decision Time" },
-            { end: 24, suffix: "/7", label: "Monitoring Uptime" },
-          ].map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.9 + i * 0.1 }}
-              className="glass rounded-2xl p-5 text-center"
-            >
-              <AnimatedCounter end={s.end} suffix={s.suffix} label={s.label} />
-            </motion.div>
-          ))}
-        </div>
+        {/* Key metric callouts — MetricCard primitives */}
+        <StaggerReveal className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4" baseDelay={0.7}>
+          <MetricCard value={99}  suffix=".7%" label="Routing Accuracy"  accentColor="cyan" />
+          <MetricCard value={73}  suffix="%"   label="Average Reuse Rate" accentColor="emerald" />
+          <MetricCard value={500} suffix="ms"  label="Decision Time"     accentColor="cyan" />
+          <MetricCard value={24}  suffix="/7"  label="Monitoring Uptime" accentColor="emerald" />
+        </StaggerReveal>
       </div>
     </section>
   )

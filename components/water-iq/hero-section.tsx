@@ -1,7 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Zap, Shield, Cpu, ArrowDown } from "lucide-react"
+import { Zap, Shield, Cpu, ArrowDown, ArrowRight } from "lucide-react"
+import GlowButton from "./ui/glow-button"
+import MetricCard from "./ui/metric-card"
 
 const badges = [
   { icon: Zap,    label: "Real-time Analysis" },
@@ -10,10 +12,10 @@ const badges = [
 ]
 
 const stats = [
-  { val: "98.7%", lbl: "Filtration Efficiency" },
-  { val: "2.4s",  lbl: "AI Response Time"      },
-  { val: "150+",  lbl: "Households Served"      },
-  { val: "5",     lbl: "Separation Layers"      },
+  { val: 98.7, suffix: "%",  lbl: "Filtration Efficiency", accent: "cyan" as const },
+  { val: 2,    suffix: ".4s", lbl: "AI Response Time",     accent: "emerald" as const },
+  { val: 150,  suffix: "+",  lbl: "Households Served",     accent: "cyan" as const },
+  { val: 5,    suffix: "",   lbl: "Separation Layers",      accent: "emerald" as const },
 ]
 
 export default function HeroSection() {
@@ -24,55 +26,57 @@ export default function HeroSection() {
     >
       {/* ── Animated gradient background ── */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        {/* Deep base */}
         <div className="absolute inset-0 bg-[#030B12]" />
-        {/* Radial glow orbs */}
         <motion.div
-          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.6, 0.4] }}
+          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.65, 0.4] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute left-1/2 top-1/3 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(0,212,255,0.12) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(0,212,255,0.14) 0%, transparent 70%)" }}
         />
         <motion.div
-          animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.5, 0.3] }}
+          animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.55, 0.3] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           className="absolute -left-32 top-1/2 h-[500px] w-[500px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(0,255,178,0.08) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(0,255,178,0.09) 0%, transparent 70%)" }}
         />
         <motion.div
-          animate={{ scale: [1, 1.06, 1], opacity: [0.25, 0.4, 0.25] }}
+          animate={{ scale: [1, 1.06, 1], opacity: [0.25, 0.42, 0.25] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
           className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full"
           style={{ background: "radial-gradient(circle, rgba(0,212,255,0.07) 0%, transparent 70%)" }}
         />
-        {/* Subtle grid */}
+        {/* Enhanced grid */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.035]"
           style={{
             backgroundImage: "linear-gradient(rgba(0,212,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,1) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
           }}
         />
-        {/* Bottom fade */}
+        {/* Corner accent lines */}
+        <div className="absolute top-0 left-0 h-32 w-px bg-gradient-to-b from-primary/40 to-transparent" />
+        <div className="absolute top-0 left-0 h-px w-32 bg-gradient-to-r from-primary/40 to-transparent" />
+        <div className="absolute top-0 right-0 h-32 w-px bg-gradient-to-b from-primary/40 to-transparent" />
+        <div className="absolute top-0 right-0 h-px w-32 bg-gradient-to-l from-primary/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#030B12] to-transparent" />
       </div>
 
       {/* ── Floating water droplets ── */}
-      {[...Array(6)].map((_, i) => (
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
           className="pointer-events-none absolute rounded-full"
           style={{
             width: `${4 + i * 2}px`,
             height: `${4 + i * 2}px`,
-            left: `${10 + i * 15}%`,
-            top: `${20 + (i % 3) * 25}%`,
-            background: i % 2 === 0 ? "rgba(0,212,255,0.4)" : "rgba(0,255,178,0.35)",
+            left: `${8 + i * 11}%`,
+            top: `${15 + (i % 4) * 20}%`,
+            background: i % 2 === 0 ? "rgba(0,212,255,0.45)" : "rgba(0,255,178,0.38)",
             filter: "blur(1px)",
-            boxShadow: i % 2 === 0 ? "0 0 8px rgba(0,212,255,0.5)" : "0 0 8px rgba(0,255,178,0.5)",
+            boxShadow: i % 2 === 0 ? "0 0 10px rgba(0,212,255,0.55)" : "0 0 10px rgba(0,255,178,0.55)",
           }}
-          animate={{ y: [-12, 12, -12], x: [0, 6, 0], opacity: [0.4, 0.8, 0.4] }}
-          transition={{ duration: 5 + i * 0.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 }}
+          animate={{ y: [-14, 14, -14], x: [0, 8, 0], opacity: [0.35, 0.85, 0.35] }}
+          transition={{ duration: 5 + i * 0.7, repeat: Infinity, ease: "easeInOut", delay: i * 0.55 }}
         />
       ))}
 
@@ -86,7 +90,7 @@ export default function HeroSection() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="mb-8"
         >
-          <div className="glass inline-flex items-center gap-2.5 rounded-full px-5 py-2 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
+          <div className="glass inline-flex items-center gap-2.5 rounded-full px-5 py-2 text-xs font-semibold tracking-[0.18em] text-primary uppercase neon-flicker">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
@@ -107,7 +111,7 @@ export default function HeroSection() {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
-            filter: "drop-shadow(0 0 40px rgba(0,212,255,0.25))",
+            filter: "drop-shadow(0 0 50px rgba(0,212,255,0.28))",
           }}
         >
           WATER·IQ
@@ -135,10 +139,11 @@ export default function HeroSection() {
           {badges.map((b, i) => (
             <motion.div
               key={b.label}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.88 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.9 + i * 0.1 }}
-              className="glass-btn flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-white/70"
+              whileHover={{ scale: 1.06, y: -2 }}
+              className="glass-btn neon-border flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-white/70 cursor-default"
             >
               <b.icon className="h-3.5 w-3.5 text-primary" />
               {b.label}
@@ -146,33 +151,23 @@ export default function HeroSection() {
           ))}
         </motion.div>
 
-        {/* CTA buttons */}
+        {/* CTA buttons — now using GlowButton */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.05 }}
           className="mb-20 flex flex-col gap-3 sm:flex-row"
         >
-          <motion.a
-            href="#solution"
-            whileHover={{ scale: 1.04, boxShadow: "0 0 48px rgba(0,212,255,0.55)" }}
-            whileTap={{ scale: 0.96 }}
-            className="rounded-full bg-primary px-9 py-4 text-sm font-bold text-primary-foreground transition-shadow"
-            style={{ boxShadow: "0 0 28px rgba(0,212,255,0.35)" }}
-          >
+          <GlowButton href="#solution" variant="primary">
             Explore Technology
-          </motion.a>
-          <motion.a
-            href="#tank"
-            whileHover={{ scale: 1.04, borderColor: "rgba(0,212,255,0.5)", color: "#00D4FF" }}
-            whileTap={{ scale: 0.96 }}
-            className="rounded-full border border-white/20 bg-white/5 px-9 py-4 text-sm font-semibold text-white/80 backdrop-blur-sm transition-all"
-          >
+            <ArrowRight className="h-4 w-4" />
+          </GlowButton>
+          <GlowButton href="#tank" variant="secondary">
             View 3D Model
-          </motion.a>
+          </GlowButton>
         </motion.div>
 
-        {/* Stats row — glass cards */}
+        {/* Stats row — now using MetricCard */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -185,11 +180,13 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4 + i * 0.08 }}
-              whileHover={{ scale: 1.04, y: -2 }}
-              className="glass glow-cyan rounded-2xl px-5 py-4 text-center"
             >
-              <div className="font-mono text-2xl font-bold text-primary">{s.val}</div>
-              <div className="mt-1 text-[10px] uppercase tracking-widest text-white/40">{s.lbl}</div>
+              <MetricCard
+                value={s.val}
+                suffix={s.suffix}
+                label={s.lbl}
+                accentColor={s.accent}
+              />
             </motion.div>
           ))}
         </motion.div>

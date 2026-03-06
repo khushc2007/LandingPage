@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { Waves, Droplets, Activity, Filter, GitBranch } from "lucide-react"
+import ScrollReveal from "./animations/scroll-reveal"
 
 const stages = [
   {
@@ -59,24 +60,13 @@ export default function SystemBreakdown() {
           {/* Tank diagram */}
           <div className="flex-shrink-0 mx-auto lg:mx-0">
             <div className="relative h-[480px] w-[260px] md:h-[560px] md:w-[300px]">
-              {/* Outer glow */}
               <div className="absolute inset-0 -z-10 rounded-3xl blur-3xl" style={{ backgroundColor: `${stages[activeStage].color}08` }} />
 
-              {/* Tank shell */}
               <div className="absolute inset-0 rounded-3xl border border-primary/15 bg-gradient-to-b from-secondary/70 to-background/90 overflow-hidden">
                 {/* Water level fill */}
-                <motion.div
-                  className="absolute bottom-0 left-0 right-0 rounded-b-3xl"
-                  style={{ height: tankProgress }}
-                >
+                <motion.div className="absolute bottom-0 left-0 right-0 rounded-b-3xl" style={{ height: tankProgress }}>
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/18 via-primary/8 to-transparent" />
-                  {/* Wave surface */}
-                  <motion.svg
-                    className="absolute -top-3 left-0 w-full"
-                    viewBox="0 0 300 24"
-                    fill="none"
-                    preserveAspectRatio="none"
-                  >
+                  <motion.svg className="absolute -top-3 left-0 w-full" viewBox="0 0 300 24" fill="none" preserveAspectRatio="none">
                     <motion.path
                       fill="rgba(0, 212, 255, 0.12)"
                       animate={{
@@ -114,19 +104,13 @@ export default function SystemBreakdown() {
                         }}
                         transition={{ duration: 0.4 }}
                       >
-                        <stage.icon
-                          className="h-4 w-4 transition-colors duration-500"
-                          style={{ color: isActive ? stage.color : isPast ? `${stage.color}80` : "#2A4A6A" }}
-                        />
+                        <stage.icon className="h-4 w-4 transition-colors duration-500" style={{ color: isActive ? stage.color : isPast ? `${stage.color}80` : "#2A4A6A" }} />
                       </motion.div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[10px] font-medium uppercase tracking-wider" style={{ color: isActive ? `${stage.color}90` : "#2A4A6A" }}>
                           {stage.subtitle}
                         </div>
-                        <div
-                          className="text-xs font-semibold truncate transition-colors duration-500"
-                          style={{ color: isActive ? stage.color : isPast ? `${stage.color}60` : "#4A6A8A" }}
-                        >
+                        <div className="text-xs font-semibold truncate transition-colors duration-500" style={{ color: isActive ? stage.color : isPast ? `${stage.color}60` : "#4A6A8A" }}>
                           {stage.title}
                         </div>
                       </div>
@@ -146,17 +130,8 @@ export default function SystemBreakdown() {
                 {stages.slice(0, -1).map((_, i) => {
                   const yPos = 8 + i * 17 + 14
                   return (
-                    <motion.div
-                      key={i}
-                      className="absolute left-1/2 -translate-x-1/2"
-                      style={{ top: `${yPos}%` }}
-                      animate={{ opacity: activeStage > i ? 0.5 : 0.08 }}
-                    >
-                      <motion.svg
-                        width="10" height="10" viewBox="0 0 10 10" fill="none"
-                        animate={activeStage > i ? { y: [0, 4, 0] } : {}}
-                        transition={{ duration: 1.2, repeat: Infinity }}
-                      >
+                    <motion.div key={i} className="absolute left-1/2 -translate-x-1/2" style={{ top: `${yPos}%` }} animate={{ opacity: activeStage > i ? 0.5 : 0.08 }}>
+                      <motion.svg width="10" height="10" viewBox="0 0 10 10" fill="none" animate={activeStage > i ? { y: [0, 4, 0] } : {}} transition={{ duration: 1.2, repeat: Infinity }}>
                         <path d="M5 1L5 9M5 9L2 6M5 9L8 6" stroke="#00D4FF" strokeWidth="1" strokeLinecap="round" />
                       </motion.svg>
                     </motion.div>
@@ -168,11 +143,7 @@ export default function SystemBreakdown() {
 
           {/* Stage detail */}
           <div className="flex-1">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-8"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8">
               <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase">System Breakdown</span>
               <h2 className="mt-3 font-[var(--font-heading)] text-3xl font-black text-foreground md:text-4xl lg:text-5xl">
                 How WATER-IQ Works
@@ -193,15 +164,24 @@ export default function SystemBreakdown() {
               ))}
             </div>
 
-            {/* Active stage card */}
+            {/* Active stage card — enhanced GlassCard aesthetic */}
             <motion.div
               key={activeStage}
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="glass rounded-2xl p-8"
-              style={{ borderColor: `${stages[activeStage].color}25`, boxShadow: `0 0 40px ${stages[activeStage].color}08` }}
+              className="wiq-glass-card rounded-2xl p-8"
+              style={{
+                borderColor: `${stages[activeStage].color}28`,
+                boxShadow: `0 0 40px ${stages[activeStage].color}09, 0 8px 32px rgba(0,0,0,0.4)`,
+              }}
             >
+              {/* Connecting line decoration */}
+              <div
+                className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-2xl"
+                style={{ background: `linear-gradient(180deg, transparent, ${stages[activeStage].color}60, transparent)` }}
+              />
+
               <div className="flex items-start gap-4">
                 <div
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
@@ -238,7 +218,6 @@ export default function SystemBreakdown() {
               </div>
             </motion.div>
 
-            {/* Stage navigation hint */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}

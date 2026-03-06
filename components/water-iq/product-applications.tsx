@@ -3,6 +3,9 @@
 import { motion, useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import { Building2, Leaf, Factory, ArrowRight } from "lucide-react"
+import ScrollReveal from "./animations/scroll-reveal"
+import StaggerReveal from "./animations/stagger-reveal"
+import GlassCard from "./ui/glass-card"
 
 const applications = [
   {
@@ -12,12 +15,11 @@ const applications = [
     subtitle: "Apartments & Condominiums",
     desc: "Install WATER-IQ in the utility room of any apartment building. The system automatically collects greywater from all units, treats it, and redistributes it for toilet flushing and irrigation.",
     stats: [
-      { label: "Water Savings", value: "40–60%" },
-      { label: "Payback Period", value: "2–4 yrs" },
+      { label: "Water Savings",   value: "40–60%" },
+      { label: "Payback Period",  value: "2–4 yrs" },
       { label: "Units Supported", value: "8–500+" },
     ],
     color: "#00D4FF",
-    gradient: "from-primary/15 to-transparent",
   },
   {
     id: "agriculture",
@@ -27,11 +29,10 @@ const applications = [
     desc: "Treated greywater meets irrigation standards for non-edible crops. WATER-IQ ensures that only properly treated water reaches plants, with real-time quality certification for every batch.",
     stats: [
       { label: "Irrigation Coverage", value: "100%" },
-      { label: "Quality Certified", value: "Every Batch" },
-      { label: "Cost Reduction", value: "Up to 70%" },
+      { label: "Quality Certified",   value: "Every Batch" },
+      { label: "Cost Reduction",      value: "Up to 70%" },
     ],
     color: "#00FFB2",
-    gradient: "from-accent/15 to-transparent",
   },
   {
     id: "commercial",
@@ -40,12 +41,11 @@ const applications = [
     subtitle: "Hotels, Offices & Factories",
     desc: "Scale WATER-IQ across large commercial facilities with centralized monitoring. Manage water reuse across floors, wings, and buildings from a single dashboard interface.",
     stats: [
-      { label: "Scale", value: "Unlimited" },
-      { label: "Monitoring", value: "Centralized" },
-      { label: "Compliance", value: "Automated" },
+      { label: "Scale",       value: "Unlimited" },
+      { label: "Monitoring",  value: "Centralized" },
+      { label: "Compliance",  value: "Automated" },
     ],
     color: "#00D4FF",
-    gradient: "from-primary/15 to-transparent",
   },
 ]
 
@@ -62,71 +62,66 @@ export default function ProductApplications() {
       </div>
 
       <div ref={ref} className="relative z-10 mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center"
-        >
+        <ScrollReveal className="text-center">
           <span className="text-xs font-bold tracking-[0.2em] text-accent uppercase">Real-World Applications</span>
           <h2 className="mt-4 font-[var(--font-heading)] text-4xl font-black text-foreground md:text-5xl lg:text-6xl text-balance">
-            Built for Every
-            <br />
+            Built for Every<br />
             <span className="text-primary glow-text">Urban Environment</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
             From single apartment buildings to city-scale deployments,
             WATER-IQ adapts to any context.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-          {/* Tab selector */}
+          {/* Tab selector — GlassCard */}
           <div className="flex flex-col gap-4">
-            {applications.map((app, i) => (
-              <motion.button
-                key={app.id}
-                initial={{ opacity: 0, x: -30 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.2 + i * 0.12 }}
-                onClick={() => setActive(i)}
-                className={`group relative flex items-start gap-5 rounded-2xl border p-6 text-left transition-all duration-300 ${
-                  active === i ? "border-primary/30 bg-secondary/50" : "border-border/40 bg-secondary/15 hover:border-border/60 hover:bg-secondary/30"
-                }`}
-              >
-                {active === i && (
-                  <motion.div
-                    layoutId="appActiveCard"
-                    className="absolute inset-0 rounded-2xl"
-                    style={{ background: `radial-gradient(ellipse at left, ${app.color}06 0%, transparent 60%)` }}
-                    transition={{ type: "spring", bounce: 0.15 }}
-                  />
-                )}
-                <div
-                  className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors"
-                  style={{ backgroundColor: active === i ? `${app.color}18` : `${app.color}08` }}
+            <StaggerReveal baseDelay={0.1} direction="left">
+              {applications.map((app, i) => (
+                <motion.button
+                  key={app.id}
+                  onClick={() => setActive(i)}
+                  className={`group relative flex items-start gap-5 rounded-2xl border p-6 text-left transition-all duration-300 neon-border ${
+                    active === i
+                      ? "border-primary/30 bg-secondary/50"
+                      : "border-border/40 bg-secondary/15 hover:bg-secondary/30"
+                  }`}
                 >
-                  <app.icon className="h-6 w-6" style={{ color: app.color }} />
-                </div>
-                <div className="relative flex-1 min-w-0">
-                  <div className="text-xs font-medium text-muted-foreground">{app.subtitle}</div>
-                  <div className="mt-0.5 text-lg font-bold text-foreground">{app.title}</div>
                   {active === i && (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="overflow-hidden"
-                    >
-                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{app.desc}</p>
-                    </motion.div>
+                      layoutId="appActiveCard"
+                      className="absolute inset-0 rounded-2xl"
+                      style={{ background: `radial-gradient(ellipse at left, ${app.color}06 0%, transparent 60%)` }}
+                      transition={{ type: "spring", bounce: 0.15 }}
+                    />
                   )}
-                </div>
-                <ArrowRight
-                  className="relative mt-1 h-4 w-4 shrink-0 transition-all"
-                  style={{ color: active === i ? app.color : "var(--muted-foreground)", transform: active === i ? "rotate(90deg)" : "none" }}
-                />
-              </motion.button>
-            ))}
+                  <div
+                    className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors"
+                    style={{ backgroundColor: active === i ? `${app.color}18` : `${app.color}08` }}
+                  >
+                    <app.icon className="h-6 w-6" style={{ color: app.color }} />
+                  </div>
+                  <div className="relative flex-1 min-w-0">
+                    <div className="text-xs font-medium text-muted-foreground">{app.subtitle}</div>
+                    <div className="mt-0.5 text-lg font-bold text-foreground">{app.title}</div>
+                    {active === i && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="overflow-hidden"
+                      >
+                        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{app.desc}</p>
+                      </motion.div>
+                    )}
+                  </div>
+                  <ArrowRight
+                    className="relative mt-1 h-4 w-4 shrink-0 transition-all"
+                    style={{ color: active === i ? app.color : "var(--muted-foreground)", transform: active === i ? "rotate(90deg)" : "none" }}
+                  />
+                </motion.button>
+              ))}
+            </StaggerReveal>
           </div>
 
           {/* Stats panel */}
@@ -157,7 +152,6 @@ export default function ProductApplications() {
                 >
                   {(() => { const Icon = applications[active].icon; return <Icon className="h-12 w-12" style={{ color: applications[active].color }} /> })()}
                 </motion.div>
-                {/* Rings */}
                 {[90, 130, 170].map((size, i) => (
                   <motion.div
                     key={size}
@@ -190,7 +184,6 @@ export default function ProductApplications() {
               </div>
             </motion.div>
 
-            {/* Mini insight */}
             <motion.div
               key={`insight-${active}`}
               initial={{ opacity: 0, y: 10 }}

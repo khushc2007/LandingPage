@@ -3,12 +3,16 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
 import { Zap, RotateCcw, Minimize2, TrendingUp, ArrowRight } from "lucide-react"
+import ScrollReveal from "./animations/scroll-reveal"
+import StaggerReveal from "./animations/stagger-reveal"
+import GlassCard from "./ui/glass-card"
+import GlowButton from "./ui/glow-button"
 
 const features = [
-  { icon: Zap,       val: "Real-time",  desc: "Continuous water quality analysis",  color: "#00D4FF" },
-  { icon: RotateCcw, val: "Autonomous", desc: "Self-routing without human input",   color: "#00FFB2" },
-  { icon: Minimize2, val: "Compact",    desc: "Fits any apartment building",         color: "#00D4FF" },
-  { icon: TrendingUp,val: "Scalable",   desc: "From 10 to 10,000 units",            color: "#00FFB2" },
+  { icon: Zap,        val: "Real-time",  desc: "Continuous water quality analysis",  color: "#00D4FF" },
+  { icon: RotateCcw,  val: "Autonomous", desc: "Self-routing without human input",   color: "#00FFB2" },
+  { icon: Minimize2,  val: "Compact",    desc: "Fits any apartment building",         color: "#00D4FF" },
+  { icon: TrendingUp, val: "Scalable",   desc: "From 10 to 10,000 units",            color: "#00FFB2" },
 ]
 
 export default function SolutionSection() {
@@ -20,7 +24,6 @@ export default function SolutionSection() {
 
   return (
     <section id="solution" ref={containerRef} className="relative py-36 px-6 overflow-hidden">
-      {/* Background glows */}
       <motion.div style={{ x }} className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute left-0 top-1/2 h-[600px] w-[600px] -translate-y-1/2 rounded-full bg-primary/5 blur-[150px]" />
         <div className="absolute right-0 bottom-0 h-[350px] w-[350px] rounded-full bg-accent/4 blur-[100px]" />
@@ -31,20 +34,14 @@ export default function SolutionSection() {
 
           {/* ── Text side ── */}
           <div className="flex-1 order-2 lg:order-1">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <ScrollReveal>
               <span className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/8 px-4 py-1.5 text-xs font-bold tracking-[0.18em] text-accent uppercase">
                 The Solution
               </span>
 
               <h2 className="mt-6 text-4xl font-black text-foreground md:text-5xl lg:text-6xl leading-tight">
-                WATER·IQ:
-                <br />
-                <span className="text-primary glow-text">Smart Greywater</span>
-                <br />
+                WATER·IQ:<br />
+                <span className="text-primary glow-text">Smart Greywater</span><br />
                 Intelligence
               </h2>
 
@@ -53,43 +50,32 @@ export default function SolutionSection() {
                 then autonomously decides whether to reuse or safely discard it —
                 all within a compact smart treatment system.
               </p>
+            </ScrollReveal>
 
-              {/* Feature cards */}
-              <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {features.map((f, i) => (
-                  <motion.div
-                    key={f.val}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    className="glass-card flex items-center gap-4 p-4"
+            {/* Feature cards — GlassCard primitives */}
+            <StaggerReveal className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2" baseDelay={0.2}>
+              {features.map((f) => (
+                <GlassCard key={f.val} className="flex items-center gap-4 p-4" glowColor={f.color === "#00D4FF" ? "cyan" : "emerald"}>
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: `${f.color}14` }}
                   >
-                    <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                      style={{ background: `${f.color}14` }}
-                    >
-                      <f.icon className="h-5 w-5" style={{ color: f.color }} />
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold" style={{ color: f.color }}>{f.val}</div>
-                      <div className="text-xs text-muted-foreground">{f.desc}</div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    <f.icon className="h-5 w-5" style={{ color: f.color }} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold" style={{ color: f.color }}>{f.val}</div>
+                    <div className="text-xs text-muted-foreground">{f.desc}</div>
+                  </div>
+                </GlassCard>
+              ))}
+            </StaggerReveal>
 
-              <motion.a
-                href="#tank"
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ delay: 0.7 }}
-                className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-accent transition-colors"
-              >
+            <ScrollReveal delay={0.5}>
+              <GlowButton href="#tank" variant="secondary" className="mt-8 rounded-full px-6 py-3 text-sm">
                 See the 3D model
                 <ArrowRight className="h-4 w-4" />
-              </motion.a>
-            </motion.div>
+              </GlowButton>
+            </ScrollReveal>
           </div>
 
           {/* ── Visual side — glass stats panel ── */}
@@ -118,10 +104,10 @@ export default function SolutionSection() {
               {/* Metrics grid */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 {[
-                  { label: "Filtration Eff.",  val: "98.7%", color: "#00D4FF", bar: 0.987 },
-                  { label: "Reuse Rate",        val: "73%",   color: "#00FFB2", bar: 0.73  },
-                  { label: "AI Accuracy",       val: "99.7%", color: "#00D4FF", bar: 0.997 },
-                  { label: "Uptime",            val: "24/7",  color: "#00FFB2", bar: 1.0   },
+                  { label: "Filtration Eff.", val: "98.7%", color: "#00D4FF", bar: 0.987 },
+                  { label: "Reuse Rate",      val: "73%",   color: "#00FFB2", bar: 0.73  },
+                  { label: "AI Accuracy",     val: "99.7%", color: "#00D4FF", bar: 0.997 },
+                  { label: "Uptime",          val: "24/7",  color: "#00FFB2", bar: 1.0   },
                 ].map((m) => (
                   <div key={m.label} className="glass-inset p-4">
                     <div className="text-[10px] uppercase tracking-widest text-white/35 mb-2">{m.label}</div>
@@ -129,8 +115,9 @@ export default function SolutionSection() {
                     <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={isInView ? { width: `${m.bar * 100}%` } : {}}
-                        transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+                        whileInView={{ width: `${m.bar * 100}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
                         className="h-full rounded-full"
                         style={{ background: `linear-gradient(90deg, ${m.color}88, ${m.color})` }}
                       />
@@ -151,6 +138,7 @@ export default function SolutionSection() {
               </div>
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
