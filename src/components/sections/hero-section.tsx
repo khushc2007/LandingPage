@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
 import { ChevronDown } from "lucide-react"
 import TankVisualization from "./tank-visualization"
+import { GlowButton } from "@/src/components/ui/glow-button"
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -97,18 +98,12 @@ export default function HeroSection() {
             transition={{ duration: 0.9, delay: 0.8 }}
             className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start"
           >
-            <a
-              href="#solution"
-              className="glow-cyan rounded-xl bg-primary px-8 py-3.5 text-center text-sm font-semibold text-primary-foreground transition-all hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]"
-            >
+            <GlowButton variant="primary" size="lg" onClick={() => document.getElementById('solution')?.scrollIntoView()}>
               Explore the System
-            </a>
-            <a
-              href="#dashboard"
-              className="rounded-xl border border-border bg-secondary/60 px-8 py-3.5 text-center text-sm font-semibold text-foreground transition-all hover:border-primary/40 hover:bg-secondary"
-            >
+            </GlowButton>
+            <GlowButton variant="secondary" size="lg" onClick={() => document.getElementById('dashboard')?.scrollIntoView()}>
               View Live Monitoring
-            </a>
+            </GlowButton>
           </motion.div>
         </motion.div>
       </div>

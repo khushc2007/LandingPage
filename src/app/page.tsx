@@ -1,25 +1,29 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import SmoothScroll from "@/components/water-iq/smooth-scroll"
-import Navbar from "@/components/water-iq/navbar"
-import HeroSection from "@/components/water-iq/hero-section"
-import ProblemSection from "@/components/water-iq/problem-section"
-import SolutionSection from "@/components/water-iq/solution-section"
-import TechnologyReveal from "@/components/water-iq/technology-reveal"
-import SystemBreakdown from "@/components/water-iq/system-breakdown"
-import FiltrationIntelligence from "@/components/water-iq/filtration-intelligence"
-import TechnologySection from "@/components/water-iq/technology-section"
-import DashboardPreview from "@/components/water-iq/dashboard-preview"
-import SustainabilitySection from "@/components/water-iq/sustainability-section"
-import VisionSection from "@/components/water-iq/vision-section"
-import ProductApplications from "@/components/water-iq/product-applications"
-import SectionDivider from "@/components/water-iq/section-divider"
+import SmoothScroll from "@/src/components/sections/smooth-scroll"
+import Navbar from "@/src/components/sections/navbar"
+import HeroSection from "@/src/components/sections/hero-section"
+
+// Lazy load heavy visuals to improve performance and stop layout shift
+const ProblemSection = dynamic(() => import("@/src/components/sections/problem-section"))
+const SolutionSection = dynamic(() => import("@/src/components/sections/solution-section"))
+const TechnologyReveal = dynamic(() => import("@/src/components/sections/technology-reveal"))
+const SystemBreakdown = dynamic(() => import("@/src/components/sections/system-breakdown"))
+const FiltrationIntelligence = dynamic(() => import("@/src/components/sections/filtration-intelligence"))
+const TechnologySection = dynamic(() => import("@/src/components/sections/technology-section"))
+const DashboardPreview = dynamic(() => import("@/src/components/sections/dashboard-preview"))
+const SustainabilitySection = dynamic(() => import("@/src/components/sections/sustainability-section"))
+const VisionSection = dynamic(() => import("@/src/components/sections/vision-section"))
+const ProductApplications = dynamic(() => import("@/src/components/sections/product-applications"))
+const SectionDivider = dynamic(() => import("@/src/components/sections/section-divider"))
 
 const WaterParticles = dynamic(
-  () => import("@/components/water-iq/water-particles"),
+  () => import("@/src/components/sections/water-particles"),
   { ssr: false }
 )
+
+import { ScrollReveal } from "@/src/components/animations/scroll-reveal"
 
 export default function Home() {
   return (
@@ -27,27 +31,49 @@ export default function Home() {
       <WaterParticles />
       <Navbar />
       <main className="relative z-10">
-        <HeroSection />
+        <ScrollReveal duration={1.2}>
+          <HeroSection />
+        </ScrollReveal>
         <SectionDivider />
-        <ProblemSection />
+        <ScrollReveal>
+          <ProblemSection />
+        </ScrollReveal>
         <SectionDivider />
-        <SolutionSection />
+        <ScrollReveal>
+          <SolutionSection />
+        </ScrollReveal>
         <SectionDivider />
-        <TechnologyReveal />
+        <ScrollReveal>
+          <TechnologyReveal />
+        </ScrollReveal>
         <SectionDivider />
-        <SystemBreakdown />
+        <ScrollReveal>
+          <SystemBreakdown />
+        </ScrollReveal>
         <SectionDivider />
-        <FiltrationIntelligence />
+        <ScrollReveal>
+          <FiltrationIntelligence />
+        </ScrollReveal>
         <SectionDivider />
-        <TechnologySection />
+        <ScrollReveal>
+          <TechnologySection />
+        </ScrollReveal>
         <SectionDivider />
-        <DashboardPreview />
+        <ScrollReveal>
+          <DashboardPreview />
+        </ScrollReveal>
         <SectionDivider />
-        <ProductApplications />
+        <ScrollReveal>
+          <ProductApplications />
+        </ScrollReveal>
         <SectionDivider />
-        <SustainabilitySection />
+        <ScrollReveal>
+          <SustainabilitySection />
+        </ScrollReveal>
         <SectionDivider />
-        <VisionSection />
+        <ScrollReveal>
+          <VisionSection />
+        </ScrollReveal>
       </main>
     </SmoothScroll>
   )

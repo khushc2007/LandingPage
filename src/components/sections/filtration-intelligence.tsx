@@ -2,6 +2,8 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useState } from "react"
+import { WaterQualityIndicator } from "@/src/components/visualizations/water-quality-indicator"
+import { GlassPanel } from "@/src/components/ui/glass-panel"
 
 const categories = [
   {
@@ -84,11 +86,10 @@ export default function FiltrationIntelligence() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(i)}
-                className={`flex items-center gap-3 rounded-xl p-4 text-left transition-all ${
-                  activeCategory === i
+                className={`flex items-center gap-3 rounded-xl p-4 text-left transition-all ${activeCategory === i
                     ? "glass-strong border-l-2"
                     : "hover:bg-secondary/30"
-                }`}
+                  }`}
                 style={{
                   borderLeftColor:
                     activeCategory === i ? cat.color : "transparent",
@@ -122,7 +123,7 @@ export default function FiltrationIntelligence() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="flex-1"
           >
-            <div className="glass glow-cyan rounded-2xl p-8">
+            <GlassPanel intensity="heavy" className="p-8">
               <motion.div
                 key={activeCategory}
                 initial={{ opacity: 0, y: 10 }}
@@ -145,71 +146,9 @@ export default function FiltrationIntelligence() {
                   {categories[activeCategory].desc}
                 </p>
 
-                {/* Gauge bar */}
+                {/* Score Indicator */}
                 <div className="mt-8">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Clean</span>
-                    <span>Contaminated</span>
-                  </div>
-                  <div className="mt-2 h-3 overflow-hidden rounded-full bg-secondary">
-                    <motion.div
-                      className="h-full rounded-full"
-                      initial={{ width: "0%" }}
-                      animate={{ width: `${categories[activeCategory].level}%` }}
-                      transition={{ duration: 0.8, ease: "easeOut" }}
-                      style={{
-                        backgroundColor: categories[activeCategory].color,
-                        boxShadow: `0 0 15px ${categories[activeCategory].color}60`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Circular gauge */}
-                <div className="mt-8 flex items-center justify-center">
-                  <div className="relative h-40 w-40">
-                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-                      <circle
-                        cx="60"
-                        cy="60"
-                        r="50"
-                        stroke="#1A2E4A"
-                        strokeWidth="8"
-                        fill="none"
-                      />
-                      <motion.circle
-                        cx="60"
-                        cy="60"
-                        r="50"
-                        stroke={categories[activeCategory].color}
-                        strokeWidth="8"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeDasharray={2 * Math.PI * 50}
-                        initial={{ strokeDashoffset: 2 * Math.PI * 50 }}
-                        animate={{
-                          strokeDashoffset:
-                            2 * Math.PI * 50 * (1 - categories[activeCategory].level / 100),
-                        }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        style={{
-                          filter: `drop-shadow(0 0 6px ${categories[activeCategory].color}60)`,
-                        }}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <motion.span
-                        key={activeCategory}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="text-2xl font-bold"
-                        style={{ color: categories[activeCategory].color }}
-                      >
-                        {categories[activeCategory].level}%
-                      </motion.span>
-                      <span className="text-xs text-muted-foreground">Contamination</span>
-                    </div>
-                  </div>
+                  <WaterQualityIndicator score={100 - categories[activeCategory].level} />
                 </div>
 
                 {/* Animated routing flow */}
@@ -249,7 +188,7 @@ export default function FiltrationIntelligence() {
                   </div>
                 </div>
               </motion.div>
-            </div>
+            </GlassPanel>
           </motion.div>
         </div>
       </div>

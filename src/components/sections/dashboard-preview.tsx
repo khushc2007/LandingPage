@@ -3,7 +3,19 @@
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Activity, Droplets, Thermometer, Gauge, TrendingUp, Bell } from "lucide-react"
-import { useSimulatedDashboardData } from "@/hooks/useSimulatedDashboardData"
+// We simulate this for now, but in real life we could use SWR/React Query.
+const useSimulatedDashboardData = () => {
+  return {
+    ph: 7.2,
+    turbidity: 0.5,
+    tds: 300,
+    orp: 650,
+    ammonia: 0.1,
+    saved: 12500,
+  }
+}
+import { SystemMonitorPanel } from "@/src/components/visualizations/system-monitor-panel"
+import { MetricCard } from "@/src/components/ui/metric-card"
 
 function MiniChart({ color, height = 40 }: { color: string; height?: number }) {
   const points = useRef(Array.from({ length: 20 }, () => Math.random() * 0.6 + 0.2))
@@ -96,26 +108,18 @@ export default function DashboardPreview() {
 
             <div className="p-4 md:p-6">
               {/* Metrics grid */}
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <SystemMonitorPanel>
                 {sensors.map((sensor) => (
-                  <div
+                  <MetricCard
                     key={sensor.label}
-                    className="rounded-xl border border-border/50 bg-secondary/30 p-4"
-                  >
-                    <div className="flex items-center gap-2">
-                      <sensor.icon className="h-4 w-4" style={{ color: sensor.color }} />
-                      <span className="text-xs text-muted-foreground">{sensor.label}</span>
-                    </div>
-                    <div className="mt-2 flex items-baseline gap-1">
-                      <span className="text-2xl font-bold text-foreground">{sensor.value}</span>
-                      <span className="text-xs text-muted-foreground">{sensor.unit}</span>
-                    </div>
-                    <div className="mt-2 h-8">
-                      <MiniChart color={sensor.color} height={32} />
-                    </div>
-                  </div>
+                    label={`${sensor.label} (${sensor.unit})`}
+                    value={sensor.value.toString()}
+                    trend="0.1"
+                    trendDirection="up"
+                    color={sensor.color === "#00f5ff" || sensor.color === "#00D4FF" ? "cyan" : sensor.color === "#3b82f6" ? "blue" : "emerald"}
+                  />
                 ))}
-              </div>
+              </SystemMonitorPanel>
 
               {/* Main chart area */}
               <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">

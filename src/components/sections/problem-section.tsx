@@ -4,6 +4,8 @@ import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Droplets, WashingMachine, ShowerHead } from "lucide-react"
 import AnimatedCounter from "./animated-counter"
+import { GlassCard } from "@/src/components/ui/glass-card"
+import { FeatureCard } from "@/src/components/ui/feature-card"
 
 const sources = [
   { icon: ShowerHead, label: "Showers", desc: "40% of daily water" },
@@ -47,27 +49,27 @@ export default function ProblemSection() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3"
         >
-          <div className="glass glow-cyan rounded-2xl p-8">
+          <GlassCard glowColor="cyan" className="p-8">
             <AnimatedCounter
               end={70}
               suffix="%"
               label="Of household water becomes greywater"
             />
-          </div>
-          <div className="glass glow-cyan rounded-2xl p-8">
+          </GlassCard>
+          <GlassCard glowColor="cyan" className="p-8">
             <AnimatedCounter
               end={120}
               suffix="k+"
               label="Liters of greywater wasted daily per complex"
             />
-          </div>
-          <div className="glass glow-cyan rounded-2xl p-8">
+          </GlassCard>
+          <GlassCard glowColor="cyan" className="p-8">
             <AnimatedCounter
               end={30}
               suffix="+"
               label="Global cities already facing severe water stress"
             />
-          </div>
+          </GlassCard>
         </motion.div>
 
         {/* Greywater sources */}
@@ -83,15 +85,14 @@ export default function ProblemSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.6 + i * 0.15 }}
-              className="glass group flex items-center gap-4 rounded-xl p-6 transition-all hover:border-primary/30"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <source.icon className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">{source.label}</h3>
-                <p className="text-sm text-muted-foreground">{source.desc}</p>
-              </div>
+              <FeatureCard
+                key={source.label}
+                glowColor="cyan"
+                icon={<source.icon />}
+                title={source.label}
+                description={source.desc}
+              />
             </motion.div>
           ))}
         </motion.div>
